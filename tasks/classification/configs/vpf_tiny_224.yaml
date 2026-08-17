@@ -1,0 +1,15 @@
+MODEL:
+  TYPE: vpf
+  NAME: vpf_tiny
+  DROP_PATH_RATE: 0.1
+  VPF:
+    EMBED_DIM: 96
+    DEPTHS: [ 2,3,4, 2 ]
+    POST_NORM: True
+TRAIN:
+  BASE_LR: 5.e-4
+  WEIGHT_DECAY: 0.08
+  CLIP_GRAD: 2.0
+SAVE_FREQ: 5
+DATA:
+  IMG_SIZE: 224

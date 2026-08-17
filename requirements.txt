@@ -1,0 +1,25 @@
+# Core runtime
+torch==2.7.0
+torchvision==0.22.0
+timm==1.0.22
+einops==0.8.1
+numpy<2
+packaging
+PyYAML
+
+# Classification
+fvcore==0.1.5.post20221221
+tensorboardX
+termcolor
+yacs
+
+# OpenMMLab installer
+openmim
+
+# OpenMMLab packages are installed separately in README.md because MMCV
+# contains compiled CUDA/C++ operators. Validated versions:
+# mmcv==2.1.0
+# mmengine==0.10.1
+# mmdet==3.3.0
+# mmsegmentation==1.2.2
+# mmpretrain==1.2.0

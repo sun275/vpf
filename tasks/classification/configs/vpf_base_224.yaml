@@ -1,0 +1,16 @@
+MODEL:
+  TYPE: vpf
+  NAME: vpf_base
+  DROP_PATH_RATE: 0.5
+  VPF:
+    EMBED_DIM: 128
+    DEPTHS: [3,3, 16, 2]
+    LAYER_SCALE: 1.e-5
+    POST_NORM: True
+TRAIN:
+  BASE_LR: 5.e-4
+  WEIGHT_DECAY: 0.08
+  CLIP_GRAD: 2.0
+SAVE_FREQ: 10
+DATA:
+  IMG_SIZE: 224

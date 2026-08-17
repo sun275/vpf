@@ -1,0 +1,88 @@
+_base_ = [
+    '../_base_/models/faster-rcnn_r50_fpn.py',
+    '../_base_/datasets/coco_detection.py',
+    '../_base_/schedules/schedule_1x.py',
+    '../_base_/default_runtime.py',
+]
+
+data_root = 'data/bdd100k/'
+classes = (
+    'person', 'rider', 'car', 'truck', 'bus', 'train', 'motorcycle',
+    'bicycle', 'traffic light', 'traffic sign'
+)
+metainfo = dict(classes=classes)
+backend_args = None
+
+model = dict(
+    roi_head=dict(
+        bbox_head=dict(num_classes=10),
+    ),
+)
+
+train_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='Resize', scale=(1280, 720), keep_ratio=True),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PackDetInputs'),
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='Resize', scale=(1280, 720), keep_ratio=True),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        type='PackDetInputs',
+        meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
+                   'scale_factor')),
+]
+
+train_dataloader = dict(
+    batch_size=4,
+    num_workers=4,
+    dataset=dict(
+        metainfo=metainfo,
+        data_root=data_root,
+        ann_file='bdd100k_det_10cls_coco/annotations/train_10cls_coco.json',
+        data_prefix=dict(img=''),
+        filter_cfg=dict(filter_empty_gt=True, min_size=32),
+        pipeline=train_pipeline,
+        backend_args=backend_args,
+    ),
+)
+val_dataloader = dict(
+    batch_size=2,
+    num_workers=4,
+    dataset=dict(
+        metainfo=metainfo,
+        data_root=data_root,
+        ann_file='bdd100k_det_10cls_coco/annotations/val_10cls_coco.json',
+        data_prefix=dict(img=''),
+        test_mode=True,
+        pipeline=test_pipeline,
+        backend_args=backend_args,
+    ),
+)
+test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    ann_file=data_root + 'bdd100k_det_10cls_coco/annotations/val_10cls_coco.json',
+    metric='bbox',
+    classwise=True,
+    backend_args=backend_args,
+)
+test_evaluator = val_evaluator
+
+optim_wrapper = dict(
+    type='OptimWrapper',
+    paramwise_cfg=dict(
+        custom_keys={
+            'norm': dict(decay_mult=0.),
+        }),
+    optimizer=dict(
+        _delete_=True,
+        type='AdamW',
+        lr=0.0001,
+        betas=(0.9, 0.999),
+        weight_decay=0.05,
+    ),
+)
