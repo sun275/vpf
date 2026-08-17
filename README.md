@@ -3,7 +3,6 @@
 VPF is a shared vision backbone for image classification, object detection,
 semantic segmentation, and autonomous-driving perception.
 
-![VPF architecture](assets/vpf_architecture.png)
 
 ## 1. Environment setup
 
